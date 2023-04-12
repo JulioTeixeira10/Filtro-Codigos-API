@@ -4,6 +4,15 @@ import xml.etree.ElementTree as ET
 
 dirDados = "C:\\Bancamais\\Fastcommerce\\DadosLoja"
 
+with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\outputCheckID.txt", "w+") as o:
+        pass
+
+def resultadoa(output):
+    with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\outputCheckID.txt", "a") as o:
+        o.write(output)
+        o.write("\n\n")
+        o.close()
+
 #Administração do arquivo .cfg
 config_object = ConfigParser()
 config_object.read(f"{dirDados}\\StoreData.cfg")
@@ -48,23 +57,23 @@ if len(IDsB) != len(id_produtos):
 #Olha se existem IDs incorretos
 CheckID = True
 CriticalCheckID = False
+
 for id in id_produtos:
     if id not in IDsB:
-        print(f"""O ID interno: {id} do Fastcommerce não existe no Bancamais, adicione esse ID ao produto correspondente no Bancamais.""")
+        resultadoa(f"O ID interno: {id} do Fastcommerce não existe no Bancamais.")
         CheckID = False
 
 for id in IDsB:
     if id not in id_produtos:
-        print(f"""O ID interno: {id} do Bancamais não existe no Fastcommerce, corrija esse ID para evitar que o 'ERRO18' aconteça ao utilizar alguma ferremante de integração.""")
+        resultadoa(f"O ID interno: {id} do Bancamais não existe no Fastcommerce.")
         CheckID = False
         CriticalCheckID = True
 
-
 #Mostra ao usuario o resultado geral
 if CheckID == True and CriticalCheckID == False:
-    print("Tudo certo.")
+    resultadoa("CheckID = True // Tudo Certo")
 elif CheckID == False:
     if CheckID == False and CriticalCheckID == True:
-        print("Houve divergencias críticas.")
+        resultadoa("CheckID = False and CriticalCheckID == True // Houve divergencias críticas.")
     else:
-        print("Houve divergencias.")
+        resultadoa("CheckID = False // Houve divergencias.")
