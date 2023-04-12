@@ -29,7 +29,14 @@ payload= (f"""StoreName={StoreName}&StoreID={StoreID}&Username={Username}&
           method=ReportView&password={password}&ObjectID=425&Fields=IDProduto""")
 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
-response = requests.request("POST", url, headers=headers, data=payload)
+try:
+    response = requests.request("POST", url, headers=headers, data=payload)
+    xml_string = response.text
+except Exception as e:
+    with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\Erro.txt", "w+") as e:
+        e.write("Houve um erro de conexão.")
+        e.close()
+    exit()
 xml_string = response.text
 
 #Arquivo XML
@@ -50,9 +57,9 @@ for id in file:
 #Olha se existem diferenças na quantidade de IDs entre os arquivos
 if len(IDsB) != len(id_produtos):
     if len(IDsB) > len(id_produtos):
-        print(f"Existem mais IDs no Bancamais: {len(IDsB)}, que no Fastcommerce: {len(id_produtos)}.")
+        resultadoa(f"Existem mais IDs no Bancamais: {len(IDsB)}, que no Fastcommerce: {len(id_produtos)}.")
     else:
-        print(f"Existem mais IDs no Fastcommerce: {len(id_produtos)}, que no Bancamais: {len(IDsB)}.")
+        resultadoa(f"Existem mais IDs no Fastcommerce: {len(id_produtos)}, que no Bancamais: {len(IDsB)}.")
 
 #Olha se existem IDs incorretos
 CheckID = True
@@ -77,3 +84,10 @@ elif CheckID == False:
         resultadoa("CheckID = False and CriticalCheckID == True // Houve divergencias críticas.")
     else:
         resultadoa("CheckID = False // Houve divergencias.")
+
+if (response.text.find("<ErrCod>")) > 0:
+    with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\Erro.txt", "w+") as e:
+        e.write("Houve um erro ao checar os IDs.")
+        e.write("\n")
+        e.write(response.text)
+        e.close()
