@@ -47,18 +47,24 @@ if len(IDsB) != len(id_produtos):
 
 #Olha se existem IDs incorretos
 CheckID = True
+CriticalCheckID = False
 for id in id_produtos:
-        if id not in IDsB:
-            print(f"""O ID interno: {id} do Fastcommerce não existe no Bancamais, adicione esse id ao produto correspondente no Bancamais.""")
-            CheckID = False
+    if id not in IDsB:
+        print(f"""O ID interno: {id} do Fastcommerce não existe no Bancamais, adicione esse ID ao produto correspondente no Bancamais.""")
+        CheckID = False
 
 for id in IDsB:
     if id not in id_produtos:
-        print(f"""O ID interno: {id} do Bancamais não existe no Fastcommerce, corrija esse ID o antes possível para evitar que o 'ERRO18' aconteça ao utilizar alguma ferremante de integração.""")
+        print(f"""O ID interno: {id} do Bancamais não existe no Fastcommerce, corrija esse ID para evitar que o 'ERRO18' aconteça ao utilizar alguma ferremante de integração.""")
         CheckID = False
+        CriticalCheckID = True
+
 
 #Mostra ao usuario o resultado geral
-if CheckID == True:
+if CheckID == True and CriticalCheckID == False:
     print("Tudo certo.")
 elif CheckID == False:
-    print("Houve divergencias.")
+    if CheckID == False and CriticalCheckID == True:
+        print("Houve divergencias críticas.")
+    else:
+        print("Houve divergencias.")
