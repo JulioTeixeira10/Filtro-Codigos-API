@@ -4,11 +4,11 @@ import xml.etree.ElementTree as ET
 
 dirDados = "C:\\Bancamais\\Fastcommerce\\DadosLoja"
 
-with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\outputCheckID.txt", "w+") as o:
+with open("C:\\Bancamais\\Fastcommerce\\ProgramasExtras\\Conferência\\FiltroIDProduto\\Resultado.txt", "w+") as o:
         pass
 
 def resultadoa(output):
-    with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\outputCheckID.txt", "a") as o:
+    with open("C:\\Bancamais\\Fastcommerce\\ProgramasExtras\\Conferência\\FiltroIDProduto\\Resultado.txt", "a") as o:
         o.write(output)
         o.write("\n\n")
         o.close()
@@ -33,26 +33,22 @@ try:
     response = requests.request("POST", url, headers=headers, data=payload)
     xml_string = response.text
 except Exception as e:
-    with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\Erro.txt", "w+") as e:
+    with open("C:\\Bancamais\\Fastcommerce\\ProgramasExtras\\Conferência\\FiltroIDProduto\\Erro.txt", "w+") as e:
         e.write("Houve um erro de conexão.")
         e.close()
     exit()
-xml_string = response.text
-
-#Arquivo XML
-with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\fileresponse.xml", "w+") as fr:
-    fr = fr.write(xml_string)
 
 #Extrai os IDs
 root = ET.fromstring(response.text)
 id_produtos = [record.find('Field[@Name="IDProduto"]').attrib['Value'] for record in root.findall('Record')]
 
 #Lê e armazena os IDs do B+ em uma lista
-f = open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\file1.txt")
+f = open("C:\\Bancamais\\Fastcommerce\\ProgramasExtras\\Conferência\\FiltroIDProduto\\syncIDs.txt")
 file = f.readlines()
 IDsB = []
 for id in file:
     IDsB.append(id.strip())
+f.close()
 
 #Olha se existem diferenças na quantidade de IDs entre os arquivos
 if len(IDsB) != len(id_produtos):
@@ -81,12 +77,12 @@ if CheckID == True and CriticalCheckID == False:
     resultadoa("CheckID = True // Tudo Certo")
 elif CheckID == False:
     if CheckID == False and CriticalCheckID == True:
-        resultadoa("CheckID = False and CriticalCheckID == True // Houve divergencias críticas.")
+        resultadoa("CheckID = False and CriticalCheckID = True // Houve divergencias críticas.")
     else:
         resultadoa("CheckID = False // Houve divergencias.")
 
 if (response.text.find("<ErrCod>")) > 0:
-    with open("C:\\Users\\Usefr\\Desktop\\Integração[Bmais - FC ]\\FiltroIDProduto\\Erro.txt", "w+") as e:
+    with open("C:\\Bancamais\\Fastcommerce\\ProgramasExtras\\Conferência\\FiltroIDProduto\\Erro.txt", "w+") as e:
         e.write("Houve um erro ao checar os IDs.")
         e.write("\n")
         e.write(response.text)
