@@ -81,7 +81,7 @@ elif CheckID == False:
     else:
         resultadoa("CheckID = False // Houve divergencias.")
 
-if (response.text.find("<ErrCod>")) > 0:
+if (response.text.find("<ErrCod>0")) == -1:
     with open("C:\\Bancamais\\Fastcommerce\\ProgramasExtras\\Conferência\\FiltroIDProduto\\Erro.txt", "w+") as e:
         e.write("Houve um erro ao checar os IDs.")
         e.write("\n")
